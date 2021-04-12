@@ -2,16 +2,20 @@
 https://en.wikipedia.org/wiki/Conway's_Game_of_Life#Examples_of_patterns ...De está página estan basadas las reglas del juego.
 https://processing.org/examples/gameoflife.html ...Me inspiré de este código para hacer los controles por teclado.
 */
+//
+//
 //Tamaño de la celula representada por un cuadrado.
 int tCelula = 10; 
 // Probabilidad de que aparezca una celula inicial de 0-100
 float probabilidad = 15;
 //Cuadricula On-Off - Presiona 'C' para poner o quitar la cuadricula
-boolean switchCuadricula = false;
+boolean switchCuadricula = true;
 //Variable controladora de tiempo, para controlarlo presiona las teclas '+' o '-'.
 int tiempo = 110;
 //Variable para pausar el programa. presiona la tecla 'P'.
 boolean pausa = false;
+//Variable para decidir como comenzar el juego
+char entrada;
 //Arreglos
 boolean[][] celulas;
 boolean[][] ancestros;
@@ -26,7 +30,7 @@ void setup(){
   celulas = new boolean[y][x];
   ancestros = new boolean[y][x];
   
-  if(switchCuadricula)cuadricula(width,height);
+  if(switchCuadricula)cuadricula(width,height);  //Agregar o quitar cuadricula
   
   for(int i = 0; i < y; i += 1){
     for(int j = 0; j < x; j += 1){
@@ -41,6 +45,8 @@ void setup(){
       
     }
   }
+  
+  
 }
 
 void draw(){
@@ -51,13 +57,14 @@ void draw(){
   int contador;
   background(255,255,255);
   if(switchCuadricula)cuadricula(width,height);
+  //Estado de pausa, solo imprime lo último guardado en celulas[][]
   if(pausa){
     for(int i = 0; i < y; i += 1){
       for(int j = 0; j < x; j += 1){
         if(celulas[i][j])square(j * tCelula, i * tCelula, tCelula);
         }
       }
-  }else{
+  }else{//Estado de pausa
   for(int i = 0; i < y; i += 1){
     for(int j = 0; j < x; j += 1){
          contador = 0;
@@ -102,7 +109,7 @@ void draw(){
             contador += 1;
           }
         }
-        
+        //Verificación de si está viva o muerta la célula
         if(contador == 3){
           celulas[i][j] = true; 
         }else if((contador == 2) && (ancestros[i][j]==true)){
@@ -113,14 +120,15 @@ void draw(){
         
       }
     }
-    
+    //Imprime el estado acutal de las celulas
     for(int i = 0; i < y; i += 1){
       for(int j = 0; j < x; j += 1){
         if(celulas[i][j])square(j * tCelula, i * tCelula, tCelula);
+        //Pone la situación actual de las celulas como pasada para la siguiente iteración
         ancestros[i][j] = celulas[i][j];
         }
       }
-    delay(tiempo);
+    delay(tiempo); //Controlador de la velocidad del juego
   }
 }
 
@@ -134,8 +142,8 @@ void cuadricula(int ancho, int altura){              //Función para hacer la cu
 }
 
 void keyPressed(){
-  if(key == 'p' || key == 'P'){if(pausa){pausa = false;}else{pausa = true;}}
-  if(key == 'c' || key == 'C'){if(switchCuadricula){switchCuadricula = false;}else{switchCuadricula = true;}}
-  if(key == '-'){tiempo += 20;}
-  if(key == '+'){if(tiempo != 10){tiempo -= 20;}}
+  if(key == 'p' || key == 'P'){if(pausa){pausa = false;}else{pausa = true;}}  //Boton pausa 'P'
+  if(key == 'c' || key == 'C'){if(switchCuadricula){switchCuadricula = false;}else{switchCuadricula = true;}}  //Botón cuadricula 'c'
+  if(key == '-'){tiempo += 20;}  //Que el juego vaya más lento '-'
+  if(key == '+'){if(tiempo != 10){tiempo -= 20;}}  //Que el juego vaya más rápido '+'
 }
